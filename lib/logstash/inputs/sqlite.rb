@@ -7,7 +7,7 @@ require "socket"
 # Read rows from an sqlite database.
 #
 # This is most useful in cases where you are logging directly to a table.
-# Any tables being watched must have an 'id' column that is monotonically
+# Any tables being watched must have an `id` column that is monotonically
 # increasing.
 #
 # All tables are read by default except:
