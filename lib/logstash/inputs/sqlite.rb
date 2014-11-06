@@ -11,11 +11,11 @@ require "socket"
 # increasing.
 #
 # All tables are read by default except:
-# * ones matching 'sqlite_%' - these are internal/adminstrative tables for sqlite
-# * 'since_table' - this is used by this plugin to track state.
+# * ones matching `sqlite_%` - these are internal/adminstrative tables for sqlite
+# * `since_table` - this is used by this plugin to track state.
 #
-# ## Example
-# 
+# Example
+# [source,sql]
 #     % sqlite /tmp/example.db
 #     sqlite> CREATE TABLE weblogs (
 #         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -26,7 +26,7 @@ require "socket"
 #         VALUES ("1.2.3.4", "/index.html", 200);
 #
 # Then with this logstash config:
-#
+# [source,ruby]
 #     input {
 #       sqlite {
 #         path => "/tmp/example.db"
@@ -40,7 +40,7 @@ require "socket"
 #     }
 #
 # Sample output:
-#
+# [source,ruby]
 #     {
 #       "@source"      => "sqlite://sadness/tmp/x.db",
 #       "@tags"        => [],
@@ -67,7 +67,7 @@ class LogStash::Inputs::Sqlite < LogStash::Inputs::Base
   # By default all tables are followed.
   config :exclude_tables, :validate => :array, :default => []
 
-  # How many rows to fetch at a time from each SELECT call.
+  # How many rows to fetch at a time from each `SELECT` call.
   config :batch, :validate => :number, :default => 5
 
   SINCE_TABLE = :since_table
