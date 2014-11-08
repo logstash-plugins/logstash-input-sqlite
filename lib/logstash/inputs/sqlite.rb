@@ -11,6 +11,7 @@ require "socket"
 # increasing.
 #
 # All tables are read by default except:
+# 
 # * ones matching `sqlite_%` - these are internal/adminstrative tables for sqlite
 # * `since_table` - this is used by this plugin to track state.
 #
