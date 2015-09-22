@@ -2,6 +2,8 @@
 require "logstash/inputs/base"
 require "logstash/namespace"
 require "socket"
+require "stud/interval"
+require "concurrent"
 
 
 # Read rows from an sqlite database.
@@ -146,7 +148,7 @@ class LogStash::Inputs::Sqlite < LogStash::Inputs::Base
 
     begin
       @logger.debug("Tailing sqlite db", :path => @path)
-      loop do
+      until stop?
         count = 0
         @table_data.each do |k, table|
           table_name = table[:name]
@@ -174,7 +176,8 @@ class LogStash::Inputs::Sqlite < LogStash::Inputs::Base
           # sleep a bit
           @logger.debug("No new rows. Sleeping.", :time => sleeptime)
           sleeptime = [sleeptime * 2, sleep_max].min
-          sleep(sleeptime)
+
+          Stud.stoppable_sleep(sleeptime) { stop? }
         else
           sleeptime = sleep_min
         end
