@@ -162,7 +162,7 @@ class LogStash::Inputs::Sqlite < LogStash::Inputs::Base
             # store each column as a field in the event.
             row.each do |column, element|
               next if column == :id
-              event[column.to_s] = element
+              event.set(column.to_s, element)
             end
             queue << event
             @table_data[k][:place] = row[:id]
