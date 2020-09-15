@@ -72,6 +72,9 @@ class LogStash::Inputs::Sqlite < LogStash::Inputs::Base
   # How many rows to fetch at a time from each `SELECT` call.
   config :batch, :validate => :number, :default => 5
 
+  # The name of the monotonically increasing "id" field
+  config :id_field, :validate => :string, :default => "id"
+
   SINCE_TABLE = :since_table
 
   public
@@ -121,7 +124,7 @@ class LogStash::Inputs::Sqlite < LogStash::Inputs::Base
   public
   def get_n_rows_from_table(db, table, offset, limit)
     dataset = db["SELECT * FROM #{table}"]
-    return db["SELECT * FROM #{table} WHERE (id > #{offset}) ORDER BY 'id' LIMIT #{limit}"].map { |row| row }
+    return db["SELECT * FROM #{table} WHERE (#{@id_field} > #{offset}) ORDER BY '#{@id_field}' LIMIT #{limit}"].map { |row| row }
   end
   
   public
@@ -156,16 +159,16 @@ class LogStash::Inputs::Sqlite < LogStash::Inputs::Base
           @logger.debug("offset is #{offset}", :k => k, :table => table_name)
           rows = get_n_rows_from_table(@db, table_name, offset, @batch)
           count += rows.count
-          rows.each do |row| 
-            event = LogStash::Event.new("host" => @host, "db" => @db)
+          rows.each do |row|
+            event = LogStash::Event.new("host" => @host, "db" => @path)
             decorate(event)
             # store each column as a field in the event.
             row.each do |column, element|
-              next if column == :id
+              next if column == @id_field
               event.set(column.to_s, element)
             end
             queue << event
-            @table_data[k][:place] = row[:id]
+            @table_data[k][:place] = row[@id_field.to_sym]
           end
           # Store the last-seen row in the database
           update_placeholder(@db, table_name, @table_data[k][:place])

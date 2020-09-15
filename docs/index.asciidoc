@@ -24,7 +24,7 @@ include::{include_path}/plugin_header.asciidoc[]
 Read rows from an sqlite database.
 
 This is most useful in cases where you are logging directly to a table.
-Any tables being watched must have an `id` column that is monotonically
+Any tables being watched must have a specified column that is monotonically
 increasing.
 
 All tables are read by default except:
@@ -85,6 +85,7 @@ This plugin supports the following configuration options plus the <<plugins-{typ
 |Setting |Input type|Required
 | <<plugins-{type}s-{plugin}-batch>> |<<number,number>>|No
 | <<plugins-{type}s-{plugin}-exclude_tables>> |<<array,array>>|No
+| <<plugins-{type}s-{plugin}-id_field>> |<<string,string>>|NO
 | <<plugins-{type}s-{plugin}-path>> |<<string,string>>|Yes
 |=======================================================================
 
@@ -109,6 +110,14 @@ How many rows to fetch at a time from each `SELECT` call.
 
 Any tables to exclude by name.
 By default all tables are followed.
+
+[id="plugins-{type}s-{plugin}-id_field"]
+===== `path`
+
+  * Value type is <<string,string>>
+  * Default value is `id`.
+
+The name of the field in the database that is monotonically increasing.
 
 [id="plugins-{type}s-{plugin}-path"]
 ===== `path` 
