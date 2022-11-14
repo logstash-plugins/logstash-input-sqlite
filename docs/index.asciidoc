@@ -53,7 +53,7 @@ Then with this logstash config:
     }
     output {
       stdout {
-        debug => true
+        codec => rubydebug
       }
     }
 
