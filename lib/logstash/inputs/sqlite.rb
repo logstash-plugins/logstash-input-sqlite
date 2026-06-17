@@ -162,7 +162,11 @@ class LogStash::Inputs::Sqlite < LogStash::Inputs::Base
             # store each column as a field in the event.
             row.each do |column, element|
               next if column == :id
-              event.set(column.to_s, element)
+              if element.instance_of? Date
+                event.set(column.to_s, element.to_s)
+              else
+                event.set(column.to_s, element)
+              end
             end
             queue << event
             @table_data[k][:place] = row[:id]
